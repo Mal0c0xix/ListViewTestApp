@@ -20,7 +20,7 @@ You just create your ViewModel and inherits from ViewModelBase;
 public class ContactViewModel : ViewModelBase
 ```
 
-Then add an ObservableCollection property to you ViewModel
+Then add an ObservableCollection property to your ViewModel
 (Use the propfull shortcut to go faster :p)
 
 ```c#
@@ -68,5 +68,57 @@ For the C# part, it's exactly the same as in Laurent's Tutorial so I'll just sho
   Next step for me : 
   + Add Buttons to Add/Remove Items and update ListView instantly.
   + Show a Menu on an ItemLongPressed event
+  
+
+# Update 05/07/2016 -- Add and Remove Buttons Added !
+
+it appeared that adding theses two buttons was far more easy than what I was thinking.
+Here are the changes:
+
+MainPage.xaml:
+```xaml
+<StackLayout Orientation="Vertical">
+    <Button Text="Add Contact" Command="{Binding AddCommand}"/>
+    <Button Text="Remove Contact" Command="{Binding RemoveCommand}"/>
+    <ListView ItemsSource="{Binding Contacts}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <ViewCell.View>
+              <StackLayout Orientation="Vertical">
+                <StackLayout Orientation="Horizontal">
+                  <Label Text="{Binding Firstname}" />
+                  <Label Text="{Binding Lastname}" />
+                </StackLayout>
+                <Label Text="{Binding Mail}"/>
+              </StackLayout>
+            </ViewCell.View>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+
+    </ListView>
+  </StackLayout>
+  ```
+  
+ContactViewModel.cs:
+```c#
+  
+    private RelayCommand _addCommand;
+    private RelayCommand _removeCommand;
+    
+    public RelayCommand AddCommand => _addCommand ?? (_addCommand = new RelayCommand(AddContact));
+    public RelayCommand RemoveCommand => _removeCommand ?? (_removeCommand = new RelayCommand(RemoveContact));
+    
+    private void AddContact()
+    {
+        Contacts.Add(new Contact("Pierre", "Guatuso", "pierre.gat@hotmail.com"));
+    }
+    
+    private void RemoveContact()
+    {
+        Contacts.Remove(Contacts[Contacts.Count - 1]);
+    }
+```
   
   
